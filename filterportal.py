@@ -91,8 +91,8 @@ jumlah_terisi = len(judul_terisi_data)
 # Tampilan jumlah data dengan Markdown
 st.markdown(f"""
 <div style="text-align: center; margin-bottom: 20px;">
-    <h2 style="color: #2c3e50;">Jumlah seluruh judul data yang diambil dari API: <span style="color: #2980b9;">{total_judul_data}</span></h2>
-    <h2 style="color: #2c3e50;">Jumlah judul data yang sudah terisi datanya: <span style="color: #27ae60;">{jumlah_terisi}</span></h2>
+    <h2 style="color: #2c3e50;">Jumlah Judul Data: <span style="color: #2980b9;">{total_judul_data}</span></h2>
+    <h2 style="color: #2c3e50;">judul data terisi: <span style="color: #27ae60;">{jumlah_terisi}</span></h2>
 </div>
 """, unsafe_allow_html=True)
 
