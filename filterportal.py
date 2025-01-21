@@ -9,7 +9,8 @@ headers = {
     "Authorization": "Bearer p0ekF-G7SFbmqgYz7__HZ-z4mnvs-wrD"
 }
 
-# Fungsi untuk mengambil data judul
+# Fungsi untuk mengambil data judul dengan caching
+@st.cache_data
 def get_data_judul():
     try:
         response = requests.get(url_main, headers=headers)
@@ -19,7 +20,8 @@ def get_data_judul():
         st.error(f"Terjadi kesalahan saat mengambil data judul: {e}")
         return []
 
-# Fungsi untuk mengambil data berdasarkan ID
+# Fungsi untuk mengambil data detail berdasarkan ID dengan caching
+@st.cache_data
 def get_data_detail(id_data):
     url_detail = f"https://satudata.jatengprov.go.id/v1/data/{id_data}"
     try:
