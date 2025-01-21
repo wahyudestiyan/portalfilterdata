@@ -44,39 +44,41 @@ st.title('Alat Bantu Filter Tahun Data Portal Data')
 tahun_mulai = st.selectbox('Pilih Tahun Mulai', [i for i in range(2019, 2025)])
 tahun_akhir = st.selectbox('Pilih Tahun Akhir', [i for i in range(tahun_mulai, 2025)])
 
-# Ambil data judul
-data_judul = get_data_judul()
+# Tampilkan spinner saat memproses data
+with st.spinner("Sedang memuat data..."):
+    # Ambil data judul
+    data_judul = get_data_judul()
 
-# Menyimpan judul yang terisi untuk rentang tahun yang dipilih
-judul_terisi_data = []
+    # Menyimpan judul yang terisi untuk rentang tahun yang dipilih
+    judul_terisi_data = []
 
-# Iterasi setiap judul data dan periksa tahun yang terisi
-for entry in data_judul:
-    id_data = entry['id']
-    judul_data = entry['judul']
-    
-    # Ambil data detail untuk setiap judul
-    detail_data = get_data_detail(id_data)
-
-    # Menyimpan tahun yang terisi
-    tahun_terisi = []
-
-    # Filter berdasarkan rentang tahun yang dipilih
-    for item in detail_data:
-        tahun_data = item.get('tahun_data', None)
+    # Iterasi setiap judul data dan periksa tahun yang terisi
+    for entry in data_judul:
+        id_data = entry['id']
+        judul_data = entry['judul']
         
-        # Pastikan tahun_data bukan None dan berada dalam rentang yang dipilih
-        if tahun_data is not None and tahun_mulai <= tahun_data <= tahun_akhir:
-            tahun_terisi.append(tahun_data)
+        # Ambil data detail untuk setiap judul
+        detail_data = get_data_detail(id_data)
 
-    # Jika ada tahun yang terisi dalam rentang yang dipilih
-    if tahun_terisi:
-        # Menyusun rentang tahun yang sesuai (misal, 2019-2021)
-        tahun_range = f"{min(tahun_terisi)}-{max(tahun_terisi)}" if len(tahun_terisi) > 1 else str(tahun_terisi[0])
-        judul_terisi_data.append({
-            'Judul Data': judul_data,
-            'Tahun Data': tahun_range
-        })
+        # Menyimpan tahun yang terisi
+        tahun_terisi = []
+
+        # Filter berdasarkan rentang tahun yang dipilih
+        for item in detail_data:
+            tahun_data = item.get('tahun_data', None)
+            
+            # Pastikan tahun_data bukan None dan berada dalam rentang yang dipilih
+            if tahun_data is not None and tahun_mulai <= tahun_data <= tahun_akhir:
+                tahun_terisi.append(tahun_data)
+
+        # Jika ada tahun yang terisi dalam rentang yang dipilih
+        if tahun_terisi:
+            # Menyusun rentang tahun yang sesuai (misal, 2019-2021)
+            tahun_range = f"{min(tahun_terisi)}-{max(tahun_terisi)}" if len(tahun_terisi) > 1 else str(tahun_terisi[0])
+            judul_terisi_data.append({
+                'Judul Data': judul_data,
+                'Tahun Data': tahun_range
+            })
 
 # Menampilkan hasil dalam tabel
 if judul_terisi_data:
