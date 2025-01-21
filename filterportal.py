@@ -1,5 +1,46 @@
+import streamlit as st
+import requests
+import pandas as pd
+import io
+
+# URL API utama
+url_main = "https://satudata.jatengprov.go.id/v1/data"
+headers = {
+    "Authorization": "Bearer p0ekF-G7SFbmqgYz7__HZ-z4mnvs-wrD"
+}
+
+# Fungsi untuk mengambil data judul dengan pagination dan caching
+@st.cache_resource
+def get_data_judul():
+    all_data = []
+    current_page = 1
+    total_pages = 1  # Inisialisasi awal
+
+    try:
+        while current_page <= total_pages:
+            # Tambahkan parameter halaman pada URL
+            response = requests.get(f"{url_main}?page={current_page}", headers=headers)
+            response.raise_for_status()  # Memastikan respons sukses
+            
+            # Parse data JSON
+            json_response = response.json()
+            data = json_response.get('data', [])
+            _meta = json_response.get('_meta', {})
+            
+            # Tambahkan data dari halaman saat ini ke dalam list
+            all_data.extend(data)
+            
+            # Update informasi pagination
+            total_pages = _meta.get('pageCount', 1)
+            current_page += 1
+
+        return all_data
+    except requests.exceptions.RequestException as e:
+        st.error(f"Terjadi kesalahan saat mengambil data judul: {e}")
+        return []
+
 # Fungsi untuk mengambil data detail berdasarkan ID dengan caching
-@st.cache_data
+@st.cache_resource
 def get_data_detail(id_data):
     url_detail = f"https://satudata.jatengprov.go.id/v1/data/{id_data}"
     try:
@@ -86,7 +127,7 @@ if judul_terisi_data:
     st.dataframe(df)  # Menampilkan tabel dengan Streamlit
 
     # Menambahkan tombol untuk mengunduh file Excel
-    @st.cache_data
+    @st.cache_resource
     def to_excel(df):
         # Menyimpan DataFrame sebagai file Excel dalam format bytes
         output = io.BytesIO()
