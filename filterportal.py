@@ -38,7 +38,7 @@ def get_data_detail(id_data):
         return []
 
 # Tampilan utama
-st.title('Dashboard Data Berdasarkan Tahun')
+st.title('Alat Bantu Filter Tahun Data Portal Data')
 
 # Form untuk memilih rentang tahun
 tahun_mulai = st.selectbox('Pilih Tahun Mulai', [i for i in range(2019, 2025)])
