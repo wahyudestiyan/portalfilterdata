@@ -42,10 +42,6 @@ def get_data_detail(id_data):
 # Tampilan utama
 st.title('Alat Bantu Filter Tahun Data Portal Data')
 
-# Form untuk memilih rentang tahun
-tahun_mulai = st.selectbox('Pilih Tahun Mulai', [i for i in range(2019, 2025)])
-tahun_akhir = st.selectbox('Pilih Tahun Akhir', [i for i in range(tahun_mulai, 2025)])
-
 # Tampilkan spinner saat memproses data
 with st.spinner("Sedang memuat data..."):
     # Ambil data judul
@@ -88,36 +84,21 @@ total_judul_data = len(data_judul)
 # Hitung jumlah judul data yang sudah terisi datanya
 jumlah_terisi = len(judul_terisi_data)
 
-# Tampilan jumlah data dengan Markdown
-st.markdown(f"""
-<div style="text-align: center; margin-bottom: 20px;">
-    <h2 style="color: #2c3e50;">Total Judul Data: <span style="color: #2980b9;">{total_judul_data}</span></h2>
-    <h2 style="color: #2c3e50;">Total Judul Data yang sudah terisi data: <span style="color: #27ae60;">{jumlah_terisi}</span></h2>
-</div>
-""", unsafe_allow_html=True)
+# Layout dengan kolom
+col1, col2 = st.columns([1, 1])  # Dua kolom dengan lebar yang sama
 
-# Menampilkan hasil dalam tabel
-if judul_terisi_data:
-    st.subheader(f"Judul Data untuk Tahun {tahun_mulai} - {tahun_akhir}:")
-    df = pd.DataFrame(judul_terisi_data)  # Mengubah list ke DataFrame
-    st.dataframe(df)  # Menampilkan tabel dengan Streamlit
+# Kolom kiri untuk form pemilihan tahun
+with col1:
+    st.subheader("Pilih Rentang Tahun")
+    tahun_mulai = st.selectbox('Tahun Mulai', [i for i in range(2019, 2025)])
+    tahun_akhir = st.selectbox('Tahun Akhir', [i for i in range(tahun_mulai, 2025)])
 
-    # Menambahkan tombol untuk mengunduh file Excel
-    @st.cache_data
-    def to_excel(df):
-        # Menyimpan DataFrame sebagai file Excel dalam format bytes
-        output = io.BytesIO()
-        with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-            df.to_excel(writer, index=False, sheet_name="Data")
-        return output.getvalue()
-
-    # Tombol unduh Excel
-    excel_data = to_excel(df)
-    st.download_button(
-        label="Unduh Tabel sebagai Excel",
-        data=excel_data,
-        file_name="judul_data.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
-else:
-    st.write(f"Tidak ada data yang terisi untuk rentang tahun {tahun_mulai} - {tahun_akhir}.")
+# Kolom kanan untuk tampilan jumlah data
+with col2:
+    st.markdown(f"""
+    <div style="text-align: center; padding: 10px; background-color: #f9f9f9; border-radius: 8px; border: 1px solid #ddd;">
+        <h4 style="color: #2c3e50; margin-bottom: 10px;">Jumlah Data</h4>
+        <p style="font-size: 18px; color: #2980b9; margin: 5px 0;">Seluruh Judul Data: <b>{total_judul_data}</b></p>
+        <p style="font-size: 18px; color: #27ae60; margin: 5px 0;">Judul Data Terisi: <b>{jumlah_terisi}</b></p>
+    </div>
+    """, unsafe_allow_html=True)
