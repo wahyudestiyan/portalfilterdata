@@ -1,44 +1,3 @@
-import streamlit as st
-import requests
-import pandas as pd
-import io
-
-# URL API utama
-url_main = "https://satudata.jatengprov.go.id/v1/data"
-headers = {
-    "Authorization": "Bearer p0ekF-G7SFbmqgYz7__HZ-z4mnvs-wrD"
-}
-
-# Fungsi untuk mengambil data judul dengan pagination dan caching
-@st.cache_data
-def get_data_judul():
-    all_data = []
-    current_page = 1
-    total_pages = 1  # Inisialisasi awal
-
-    try:
-        while current_page <= total_pages:
-            # Tambahkan parameter halaman pada URL
-            response = requests.get(f"{url_main}?page={current_page}", headers=headers)
-            response.raise_for_status()  # Memastikan respons sukses
-            
-            # Parse data JSON
-            json_response = response.json()
-            data = json_response.get('data', [])
-            _meta = json_response.get('_meta', {})
-            
-            # Tambahkan data dari halaman saat ini ke dalam list
-            all_data.extend(data)
-            
-            # Update informasi pagination
-            total_pages = _meta.get('pageCount', 1)
-            current_page += 1
-
-        return all_data
-    except requests.exceptions.RequestException as e:
-        st.error(f"Terjadi kesalahan saat mengambil data judul: {e}")
-        return []
-
 # Fungsi untuk mengambil data detail berdasarkan ID dengan caching
 @st.cache_data
 def get_data_detail(id_data):
@@ -88,9 +47,14 @@ with st.spinner("Sedang memuat data..."):
         for item in detail_data:
             tahun_data = item.get('tahun_data', None)
             
-            # Pastikan tahun_data bukan None dan berada dalam rentang yang dipilih
-            if tahun_data is not None and tahun_mulai <= tahun_data <= tahun_akhir:
-                tahun_terisi.append(tahun_data)
+            # Pastikan tahun_data adalah integer dan berada dalam rentang yang dipilih
+            if tahun_data is not None:
+                try:
+                    tahun_data = int(tahun_data)  # Mengonversi ke integer jika perlu
+                    if tahun_mulai <= tahun_data <= tahun_akhir:
+                        tahun_terisi.append(tahun_data)
+                except ValueError:
+                    st.warning(f"Tahun data tidak valid: {tahun_data} untuk ID: {id_data}")
 
         # Jika ada tahun yang terisi dalam rentang yang dipilih
         if tahun_terisi:
