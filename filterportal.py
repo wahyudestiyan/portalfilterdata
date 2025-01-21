@@ -9,13 +9,32 @@ headers = {
     "Authorization": "Bearer p0ekF-G7SFbmqgYz7__HZ-z4mnvs-wrD"
 }
 
-# Fungsi untuk mengambil data judul dengan caching
+# Fungsi untuk mengambil data judul dengan pagination dan caching
 @st.cache_data
 def get_data_judul():
+    all_data = []
+    current_page = 1
+    total_pages = 1  # Inisialisasi awal
+
     try:
-        response = requests.get(url_main, headers=headers)
-        response.raise_for_status()  # Memastikan respons sukses
-        return response.json().get('data', [])
+        while current_page <= total_pages:
+            # Tambahkan parameter halaman pada URL
+            response = requests.get(f"{url_main}?page={current_page}", headers=headers)
+            response.raise_for_status()  # Memastikan respons sukses
+            
+            # Parse data JSON
+            json_response = response.json()
+            data = json_response.get('data', [])
+            _meta = json_response.get('_meta', {})
+            
+            # Tambahkan data dari halaman saat ini ke dalam list
+            all_data.extend(data)
+            
+            # Update informasi pagination
+            total_pages = _meta.get('pageCount', 1)
+            current_page += 1
+
+        return all_data
     except requests.exceptions.RequestException as e:
         st.error(f"Terjadi kesalahan saat mengambil data judul: {e}")
         return []
@@ -92,7 +111,7 @@ jumlah_terisi = len(judul_terisi_data)
 st.markdown(f"""
 <div style="text-align: center; margin-bottom: 20px;">
     <h2 style="color: #2c3e50;">Jumlah Judul Data: <span style="color: #2980b9;">{total_judul_data}</span></h2>
-    <h2 style="color: #2c3e50;">judul data terisi: <span style="color: #27ae60;">{jumlah_terisi}</span></h2>
+    <h2 style="color: #2c3e50;">Judul Data Terisi: <span style="color: #27ae60;">{jumlah_terisi}</span></h2>
 </div>
 """, unsafe_allow_html=True)
 
