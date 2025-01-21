@@ -35,8 +35,8 @@ def get_data_judul():
             current_page += 1
 
         return all_data
-    except requests.exceptions.RequestException as e:
-        st.error(f"Terjadi kesalahan saat mengambil data judul: {e}")
+    except requests.exceptions.RequestException:
+        # Cegah menampilkan error ke Streamlit
         return []
 
 # Fungsi untuk mengambil data detail berdasarkan ID dengan caching
@@ -52,10 +52,10 @@ def get_data_detail(id_data):
         if 'data' in detail_data:
             return detail_data['data']
         else:
-            st.warning(f"Warning: Tidak ada data ditemukan untuk ID: {id_data}")
+            # Mengembalikan data kosong jika tidak ada data tanpa mencetak error
             return []
-    except requests.exceptions.RequestException as e:
-        st.error(f"Terjadi kesalahan saat mengambil detail data ID {id_data}: {e}")
+    except requests.exceptions.RequestException:
+        # Jangan tampilkan pesan error di Streamlit
         return []
 
 # Tampilan utama
