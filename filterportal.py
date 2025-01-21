@@ -88,9 +88,13 @@ total_judul_data = len(data_judul)
 # Hitung jumlah judul data yang sudah terisi datanya
 jumlah_terisi = len(judul_terisi_data)
 
-# Tampilkan jumlah total judul data dan jumlah yang sudah terisi
-st.write(f"**Jumlah seluruh judul data yang diambil dari API: {total_judul_data}**")
-st.write(f"**Jumlah judul data yang sudah terisi datanya: {jumlah_terisi}**")
+# Tampilan jumlah data dengan Markdown
+st.markdown(f"""
+<div style="text-align: center; margin-bottom: 20px;">
+    <h2 style="color: #2c3e50;">Jumlah seluruh judul data yang diambil dari API: <span style="color: #2980b9;">{total_judul_data}</span></h2>
+    <h2 style="color: #2c3e50;">Jumlah judul data yang sudah terisi datanya: <span style="color: #27ae60;">{jumlah_terisi}</span></h2>
+</div>
+""", unsafe_allow_html=True)
 
 # Menampilkan hasil dalam tabel
 if judul_terisi_data:
