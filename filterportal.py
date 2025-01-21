@@ -82,6 +82,16 @@ with st.spinner("Sedang memuat data..."):
                 'Tahun Data': tahun_range
             })
 
+# Hitung jumlah total judul data yang diambil dari API
+total_judul_data = len(data_judul)
+
+# Hitung jumlah judul data yang sudah terisi datanya
+jumlah_terisi = len(judul_terisi_data)
+
+# Tampilkan jumlah total judul data dan jumlah yang sudah terisi
+st.write(f"**Jumlah seluruh judul data yang diambil dari API: {total_judul_data}**")
+st.write(f"**Jumlah judul data yang sudah terisi datanya: {jumlah_terisi}**")
+
 # Menampilkan hasil dalam tabel
 if judul_terisi_data:
     st.subheader(f"Judul Data untuk Tahun {tahun_mulai} - {tahun_akhir}:")
