@@ -122,7 +122,7 @@ st.markdown(f"""
 
 # Menampilkan hasil dalam tabel
 if judul_terisi_data:
-    st.subheader(f"Judul Data untuk Tahun {tahun_mulai} - {tahun_akhir}:")
+    st.subheader(f"Judul Data yang sudah terisi data pada tahun {tahun_mulai} - {tahun_akhir} :")
     df = pd.DataFrame(judul_terisi_data)  # Mengubah list ke DataFrame
     st.dataframe(df)  # Menampilkan tabel dengan Streamlit
 
