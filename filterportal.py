@@ -129,19 +129,7 @@ if judul_terisi_data:
     df = pd.DataFrame(judul_terisi_data)  # Mengubah list ke DataFrame
     st.dataframe(df)  # Menampilkan tabel dengan Streamlit
 
-    # Menambahkan tombol untuk melihat data per judul
-    for index, row in df.iterrows():
-        id_data = row['ID']
-        judul_data = row['Judul Data']
-        
-        # Tombol "Lihat Data" untuk setiap judul
-        if st.button(f"Lihat Data {judul_data}", key=f"lihat_{id_data}"):
-            # Ambil dan tampilkan data detail untuk judul yang diklik
-            detail_data = get_data_detail(id_data)
-            st.write(f"Detail Data untuk {judul_data}")
-            st.dataframe(detail_data)  # Menampilkan data dalam bentuk tabel
-
-    # Menambahkan tombol untuk mengunduh file Excel
+ # Menambahkan tombol untuk mengunduh file Excel
     @st.cache_resource
     def to_excel(df):
         # Menyimpan DataFrame sebagai file Excel dalam format bytes
@@ -160,3 +148,17 @@ if judul_terisi_data:
     )
 else:
     st.write(f"Tidak ada data yang terisi untuk rentang tahun {tahun_mulai} - {tahun_akhir}.")
+
+    # Menambahkan tombol untuk melihat data per judul
+    for index, row in df.iterrows():
+        id_data = row['ID']
+        judul_data = row['Judul Data']
+        
+        # Tombol "Lihat Data" untuk setiap judul
+        if st.button(f"Lihat Data {judul_data}", key=f"lihat_{id_data}"):
+            # Ambil dan tampilkan data detail untuk judul yang diklik
+            detail_data = get_data_detail(id_data)
+            st.write(f"Detail Data untuk {judul_data}")
+            st.dataframe(detail_data)  # Menampilkan data dalam bentuk tabel
+
+   
