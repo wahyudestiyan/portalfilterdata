@@ -105,7 +105,8 @@ with st.spinner("Sedang memuat data..."):
             tahun_range = f"{min(tahun_terisi)}-{max(tahun_terisi)}" if len(tahun_terisi) > 1 else str(next(iter(tahun_terisi)))
             judul_terisi_data.append({
                 'Judul Data': judul_data,
-                'Tahun Data': tahun_range
+                'Tahun Data': tahun_range,
+                'ID': id_data  # Menyimpan ID data untuk referensi
             })
 
 # Hitung jumlah total judul data yang diambil dari API
@@ -127,6 +128,18 @@ if judul_terisi_data:
     st.subheader(f"Judul Data yang sudah terisi data tahun {tahun_mulai} - {tahun_akhir} :")
     df = pd.DataFrame(judul_terisi_data)  # Mengubah list ke DataFrame
     st.dataframe(df)  # Menampilkan tabel dengan Streamlit
+
+    # Menambahkan tombol untuk melihat data per judul
+    for index, row in df.iterrows():
+        id_data = row['ID']
+        judul_data = row['Judul Data']
+        
+        # Tombol "Lihat Data" untuk setiap judul
+        if st.button(f"Lihat Data {judul_data}", key=f"lihat_{id_data}"):
+            # Ambil dan tampilkan data detail untuk judul yang diklik
+            detail_data = get_data_detail(id_data)
+            st.write(f"Detail Data untuk {judul_data}")
+            st.dataframe(detail_data)  # Menampilkan data dalam bentuk tabel
 
     # Menambahkan tombol untuk mengunduh file Excel
     @st.cache_resource
