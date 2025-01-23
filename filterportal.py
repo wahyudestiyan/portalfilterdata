@@ -65,13 +65,15 @@ st.title('Alat Bantu Filter Tahun Data Portal Data')
 tahun_mulai = st.selectbox('Pilih Tahun Mulai', [i for i in range(2019, 2025)])
 tahun_akhir = st.selectbox('Pilih Tahun Akhir', [i for i in range(tahun_mulai, 2025)])
 
-# Tampilkan spinner saat memproses data
 with st.spinner("Sedang memuat data..."):
     # Ambil data judul
     data_judul = get_data_judul()
 
     # Menyimpan judul yang terisi untuk rentang tahun yang dipilih
     judul_terisi_data = []
+
+    # Daftar tahun yang harus ada dalam rentang yang dipilih
+    tahun_range_diharapkan = set(range(tahun_mulai, tahun_akhir + 1))
 
     # Iterasi setiap judul data dan periksa tahun yang terisi
     for entry in data_judul:
@@ -82,7 +84,7 @@ with st.spinner("Sedang memuat data..."):
         detail_data = get_data_detail(id_data)
 
         # Menyimpan tahun yang terisi
-        tahun_terisi = []
+        tahun_terisi = set()
 
         # Filter berdasarkan rentang tahun yang dipilih
         for item in detail_data:
@@ -93,14 +95,14 @@ with st.spinner("Sedang memuat data..."):
                 try:
                     tahun_data = int(tahun_data)  # Mengonversi ke integer jika perlu
                     if tahun_mulai <= tahun_data <= tahun_akhir:
-                        tahun_terisi.append(tahun_data)
+                        tahun_terisi.add(tahun_data)
                 except ValueError:
                     st.warning(f"Tahun data tidak valid: {tahun_data} untuk ID: {id_data}")
 
-        # Jika ada tahun yang terisi dalam rentang yang dipilih
-        if tahun_terisi:
+        # Cek jika seluruh tahun yang diperlukan ada dalam tahun_terisi
+        if tahun_range_diharapkan.issubset(tahun_terisi):
             # Menyusun rentang tahun yang sesuai (misal, 2019-2021)
-            tahun_range = f"{min(tahun_terisi)}-{max(tahun_terisi)}" if len(tahun_terisi) > 1 else str(tahun_terisi[0])
+            tahun_range = f"{min(tahun_terisi)}-{max(tahun_terisi)}" if len(tahun_terisi) > 1 else str(next(iter(tahun_terisi)))
             judul_terisi_data.append({
                 'Judul Data': judul_data,
                 'Tahun Data': tahun_range
